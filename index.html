@@ -53,6 +53,8 @@
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -127,6 +129,17 @@
       transition: background 0.3s ease;
     }
 
+  .top-rank {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    transform-origin: top;
+  }
+
+  .top-rank.moved {
+    background-color: #202a33;
+    border-left: 4px solid #00ffcc;
+  }
+
+
     .student-entry:hover {
       background-color: #333;
       cursor: pointer;
@@ -175,25 +188,28 @@
   <a href="admin.html" style="color: #00ffff; font-size: 1rem; text-decoration: none;">🔐 Admin Panel</a>
 </div>
 
-  <div class="leaderboard-wrapper">
-    <!-- All Students Section (Split into 2 columns) -->
-    <div class="leaderboard-column full">
-      <h2>🏅 All Students</h2>
-      <div class="student-split">
-        <div id="left-students"></div>
-        <div id="right-students"></div>
-      </div>
-    </div>
+<div class="leaderboard-wrapper">
+  <!-- Top 5 Students Section -->
+  <div class="leaderboard-column" id="top-5">
+    <h2>🥇 Top 5</h2>
+    <div class="loading">Loading...</div>
+  </div>
 
-    <!-- Top 5 Students Section -->
-    <div class="leaderboard-column" id="top-5">
-      <h2>🥇 Top 5</h2>
-      <div class="loading">Loading...</div>
+  <!-- All Students Section (Split into 2 columns) -->
+  <div class="leaderboard-column full">
+    <h2>🏅 All Students</h2>
+    <div class="student-split">
+      <div id="left-students"></div>
+      <div id="right-students"></div>
     </div>
   </div>
+</div>
+
 
   <script src="js/supabase-config.js"></script>
   <script>
+    let previousTop5 = [];
+
     const top5El = document.getElementById('top-5');
     const leftEl = document.getElementById('left-students');
     const rightEl = document.getElementById('right-students');
@@ -216,25 +232,15 @@
       renderAllStudents(others, 6);
     }
 
-    function renderTop5(list) {
-      const wrapper = document.createElement('div');
-      list.forEach((student, index) => {
-        const el = document.createElement('div');
-        el.className = 'student-entry';
-        el.innerHTML = `
-          <div class="rank">${index + 1}</div>
-          <div class="name">${student.name}</div>
-          <div class="points">${student.total_points}</div>
-        `;
-        el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
-        wrapper.appendChild(el);
-      });
-      const heading = top5El.querySelector('h2')?.outerHTML || '';
-      top5El.innerHTML = heading;
-      top5El.appendChild(wrapper);
-    }
-
     function renderAllStudents(list, startRank = 6) {
+      const leftEl = document.getElementById("left-students");
+      const rightEl = document.getElementById("right-students");
+
+      if (!leftEl || !rightEl) {
+        console.error("Missing left/right student containers.");
+        return;
+      }
+
       leftEl.innerHTML = '';
       rightEl.innerHTML = '';
 
@@ -247,9 +253,50 @@
           <div class="points">${student.total_points}</div>
         `;
         el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
+        
+        // Alternate to left/right column
         (index % 2 === 0 ? leftEl : rightEl).appendChild(el);
       });
     }
+
+
+    function renderTop5(list) {
+      const wrapper = document.createElement('div');
+
+      list.forEach((student, index) => {
+        const el = document.createElement('div');
+        el.className = 'student-entry top-rank';
+
+        // === Scale effect based on rank ===
+        const scaleMap = [1.3, 1.2, 1.1, 1.05, 1];
+        const scale = scaleMap[index] || 1;
+        el.style.transform = `scaleY(${scale})`;
+
+        // === Movement Detection ===
+        const previousIndex = previousTop5.findIndex(prev => prev.id === student.id);
+        if (previousIndex !== -1 && previousIndex !== index) {
+          el.classList.add('moved');
+        }
+
+        // === Content Rendering ===
+        el.innerHTML = `
+          <div class="rank">${index + 1}</div>
+          <div class="name">${student.name}</div>
+          <div class="points" data-id="${student.id}">${student.total_points}</div>
+        `;
+
+        el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
+        wrapper.appendChild(el);
+      });
+
+      const heading = top5El.querySelector('h2')?.outerHTML || '';
+      top5El.innerHTML = heading;
+      top5El.appendChild(wrapper);
+
+      // Save for future comparison
+      previousTop5 = list.map((s, i) => ({ id: s.id, rank: i }));
+    }
+
 
     // Initial Load
     loadLeaderboard();

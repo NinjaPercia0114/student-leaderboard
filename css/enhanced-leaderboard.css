@@ -1,0 +1,365 @@
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #0000CC;
+    --primary-light: #0000FF;
+    --primary-dark: #000099;
+    --success-color: #006600;
+    --warning-color: #CC6600;
+    --danger-color: #CC0000;
+  }
+  
+  .progress-bar-container {
+    border: 1px solid var(--dark-grey);
+  }
+  
+  .student-row, .top-student-card {
+    border: 2px solid var(--dark-grey);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --white: #1a1a1a;
+    --light-color: #121212;
+    --light-grey: #2a2a2a;
+    --mid-grey: #3a3a3a;
+    --grey-color: #8a8a8a;
+    --dark-grey: #bbbbbb;
+    --dark-color: #e0e0e0;
+    --darkest-color: #f0f0f0;
+    
+    --primary-lighter: rgba(99, 102, 241, 0.2);
+    --success-lighter: rgba(16, 185, 129, 0.2);
+    --warning-lighter: rgba(245, 158, 11, 0.2);
+    --danger-lighter: rgba(239, 68, 68, 0.2);
+    
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --box-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+    --box-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  body {
+    background-color: #121212;
+  }
+  
+  .progress-bar-container {
+    background-color: var(--mid-grey);
+  }
+  
+  .student-row, .top-student-card {
+    background-color: var(--white);
+    border-color: var(--mid-grey);
+  }
+  
+  .student-row:hover {
+    background-color: #222222;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background-color: white;
+    color: black;
+  }
+  
+  header, footer, .admin-link {
+    display: none;
+  }
+  
+  .top-student-card, .student-row {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  .top-student-card:hover, .student-row:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .top-students {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .remaining-students {
+    flex-direction: column;
+  }
+  
+  .student-row {
+    margin-bottom: 8px;
+  }
+  
+  .leaderboard-container {
+    margin-bottom: 0;
+  }
+  
+  .remaining-students-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  @page {
+    margin: 1cm;
+  }
+}
+
+/* Additional Features for Engagement */
+
+/* Add celebration confetti effect for first place */
+.top-student-card.rank-1::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-image: 
+    radial-gradient(circle, var(--warning-color) 2px, transparent 2px),
+    radial-gradient(circle, var(--primary-color) 2px, transparent 2px),
+    radial-gradient(circle, var(--success-color) 2px, transparent 2px),
+    radial-gradient(circle, var(--secondary-color) 2px, transparent 2px);
+  background-size: 18px 18px;
+  background-position: 0 0, 9px 9px, 18px 0px, 9px -9px;
+  animation: confetti-fall 3s linear infinite;
+  opacity: 0;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px);
+    opacity: 0;
+  }
+}
+
+/* Hover effects for student rows */
+.student-row:hover .rank {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+.student-row:hover .points {
+  color: var(--warning-color);
+  transition: color 0.3s ease;
+}
+
+/* Add subtle hover glow to top cards */
+.top-student-card:hover {
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.top-student-card.rank-1:hover {
+  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+}
+
+.top-student-card.rank-2:hover {
+  box-shadow: 0 12px 35px rgba(192, 192, 192, 0.3);
+}
+
+.top-student-card.rank-3:hover {
+  box-shadow: 0 12px 35px rgba(205, 127, 50, 0.3);
+}
+
+/* Interactive progress bars */
+.progress-bar-container:hover .progress-bar {
+  filter: brightness(1.1);
+}
+
+/* Add subtle gold star background to first place */
+.top-student-card.rank-1 {
+  background-image: 
+    radial-gradient(circle, rgba(255, 215, 0, 0.05) 20%, transparent 20%),
+    radial-gradient(circle, rgba(255, 215, 0, 0.05) 20%, transparent 20%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+}
+
+/* Add subtle silver star background to second place */
+.top-student-card.rank-2 {
+  background-image: 
+    radial-gradient(circle, rgba(192, 192, 192, 0.05) 15%, transparent 15%),
+    radial-gradient(circle, rgba(192, 192, 192, 0.05) 15%, transparent 15%);
+  background-size: 50px 50px;
+  background-position: 0 0, 25px 25px;
+}
+
+/* Add subtle bronze star background to third place */
+.top-student-card.rank-3 {
+  background-image: 
+    radial-gradient(circle, rgba(205, 127, 50, 0.05) 10%, transparent 10%),
+    radial-gradient(circle, rgba(205, 127, 50, 0.05) 10%, transparent 10%);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+}
+
+/* Fancy tooltip for progress bar */
+.progress-bar-container {
+  position: relative;
+}
+
+.progress-bar-container::after {
+  content: attr(data-percent) '%';
+  position: absolute;
+  top: -25px;
+  right: 0;
+  background-color: var(--darkest-color);
+  color: var(--white);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-xs);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(5px);
+  pointer-events: none;
+}
+
+.progress-bar-container:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Loading state animation improvements */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.leaderboard.loading .student-row {
+  background: linear-gradient(
+    90deg,
+    var(--light-color) 0%,
+    var(--light-grey) 50%,
+    var(--light-color) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* First place badge special effects */
+.top-student-card.rank-1 .rank-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.top-student-card.rank-1 .rank-badge::after {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+  top: -25%;
+  left: -25%;
+  opacity: 0;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* Achievement badges for top 3 */
+.top-student-card .achievement-badges {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.achievement-badge {
+  font-size: 20px;
+  position: relative;
+}
+
+.achievement-badge::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  background-color: var(--darkest-color);
+  color: var(--white);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  transform-origin: bottom center;
+}
+
+.achievement-badge:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  bottom: calc(100% + 5px);
+}
+
+/* Interactive hover states for clickable elements */
+.student-row, .top-student-card, .admin-link a {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.student-row::after, .top-student-card::after, .admin-link a::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: -1;
+}
+
+.student-row:active::after, .top-student-card:active::after, .admin-link a:active::after {
+  width: 300%;
+  height: 300%;
+}
+
+/* Focus states for accessibility */
+.student-row:focus, .top-student-card:focus, .admin-link a:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.student-row:focus-visible, .top-student-card:focus-visible, .admin-link a:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .top-student-card.rank-1 {
+    animation: none;
+  }
+  
+  .progress-bar::after {
+    animation: none;
+  }
+  
+  .top-student-card:hover, .student-row:hover {
+    transform: none;
+  }
+}

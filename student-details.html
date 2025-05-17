@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Supabase JS library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Student Details</h1>
+            <p class="subheading">Detailed student performance</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="back-button">
+            <a href="index.html">&larr; Back to Leaderboard</a>
+        </div>
+
+        <div class="student-details">
+            <div class="student-info">
+                <h2 id="student-name" class="student-name-big">Loading student info...</h2>
+                <div class="student-stats">
+                    <div class="rank-badge">
+                        <span>Rank</span>
+                        <div id="student-rank" class="student-rank-big">-</div>
+                    </div>
+                    <div class="points-badge">
+                        <span>Total Points</span>
+                        <div id="student-points" class="student-points-big">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="challenges-section">
+                <h3>Challenge Performance</h3>
+                <div class="challenge-list" id="challenge-list">
+                    <!-- Challenge items will be inserted here dynamically -->
+                    <div class="loading">Loading challenge data...</div>
+                </div>
+            </div>
+
+            <div class="bonus-challenges-section">
+                <h3>Bonus Challenges</h3>
+                <div id="bonus-status" class="bonus-status">
+                    <!-- Bonus challenge status will be shown here -->
+                </div>
+                <div class="bonus-challenge-list" id="bonus-challenge-list">
+                    <!-- Bonus challenge items will be inserted here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Student Leaderboard System</p>
+        </div>
+    </footer>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/student-details.js"></script>
+</body>
+</html>

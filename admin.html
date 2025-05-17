@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Student Leaderboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Supabase JS library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Admin Dashboard</h1>
+            <p class="subheading">Manage student scores and challenges</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="back-button">
+            <a href="index.html">&larr; Back to Leaderboard</a>
+        </div>
+
+        <div class="connection-status" id="connection-status"></div>
+
+        <div class="admin-panel">
+            <div class="admin-tabs">
+                <button class="tab-button active" data-tab="students">Manage Students</button>
+                <button class="tab-button" data-tab="challenges">Manage Challenges</button>
+            </div>
+
+            <div class="tab-content" id="students-tab">
+                <div class="admin-actions">
+                    <button id="add-student-btn" class="primary-btn">Add New Student</button>
+                </div>
+
+                <div class="student-list" id="admin-student-list">
+                    <!-- Student list will be loaded here -->
+                    <div class="loading">Loading student data...</div>
+                </div>
+            </div>
+
+            <div class="tab-content hidden" id="challenges-tab">
+                <div class="admin-actions">
+                    <button id="add-challenge-btn" class="primary-btn">Add New Challenge</button>
+                </div>
+
+                <div class="challenge-management">
+                    <h3>Compulsory Challenges</h3>
+                    <div id="compulsory-challenges-list" class="challenge-admin-list">
+                        <!-- Compulsory challenges will be loaded here -->
+                    </div>
+
+                    <h3>Bonus Challenges</h3>
+                    <div id="bonus-challenges-list" class="challenge-admin-list">
+                        <!-- Bonus challenges will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing student -->
+    <div class="modal" id="student-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 id="student-modal-title">Add New Student</h3>
+            <form id="student-form">
+                <div class="form-group">
+                    <label for="student-name-input">Student Name:</label>
+                    <input type="text" id="student-name-input" required>
+                </div>
+                <div class="form-group hidden" id="challenge-scores-container">
+                    <h4>Challenge Scores</h4>
+                    <!-- Challenge scores will be added here dynamically -->
+                </div>
+                <button type="submit" class="primary-btn">Save Student</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing challenge -->
+    <div class="modal" id="challenge-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 id="challenge-modal-title">Add New Challenge</h3>
+            <form id="challenge-form">
+                <div class="form-group">
+                    <label for="challenge-name-input">Challenge Name:</label>
+                    <input type="text" id="challenge-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="challenge-points-input">Max Points:</label>
+                    <input type="number" id="challenge-points-input" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="challenge-type-input">Challenge Type:</label>
+                    <select id="challenge-type-input">
+                        <option value="compulsory">Compulsory</option>
+                        <option value="bonus">Bonus</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="bonus-threshold-group">
+                    <label for="bonus-threshold-input">Required Points to Unlock:</label>
+                    <input type="number" id="bonus-threshold-input" min="1">
+                </div>
+                <button type="submit" class="primary-btn">Save Challenge</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Debug Console -->
+    <div class="debug-console hidden" id="debug-console">
+        <div class="debug-header">
+            <h4>Debug Console</h4>
+            <button id="close-debug">Close</button>
+        </div>
+        <div id="debug-content"></div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Student Leaderboard System</p>
+        </div>
+    </footer>
+
+    <script src="js/supabase-config.js"></script>
+    <!-- <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+            window.location.href = 'login.html';
+            }
+        });
+     </script>
+     <button onclick="logout()">Logout</button>
+    <script>
+    async function logout() {
+        await supabase.auth.signOut();
+        window.location.href = 'login.html';
+    }
+    </script> -->
+
+
+</body>
+</html>

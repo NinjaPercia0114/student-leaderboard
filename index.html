@@ -208,56 +208,113 @@
 
   <script src="js/supabase-config.js"></script>
   <script>
-    let previousTop5 = [];
+      let previousTop5 = [];
 
-    const top5El = document.getElementById('top-5');
-    const leftEl = document.getElementById('left-students');
-    const rightEl = document.getElementById('right-students');
+      const top5El = document.getElementById('top-5');
+      const leftEl = document.getElementById('left-students');
+      const rightEl = document.getElementById('right-students');
 
-    async function loadLeaderboard() {
-      const { data: students, error } = await supabase
-        .from('students')
-        .select('id, name, total_points')
-        .order('total_points', { ascending: false });
+      // 🆕 Function to assign same rank to same scores
+      function getRankedList(students) {
+        const ranked = [];
+        let currentRank = 1;
+        let prevScore = null;
+        let offset = 0;
 
-      if (error || !students) {
-        top5El.innerHTML += "<div class='loading'>⚠️ Failed to load</div>";
-        return;
+        students.forEach((student, index) => {
+          if (student.total_points !== prevScore) {
+            currentRank = index + 1;
+            currentRank -= offset;
+          } else {
+            offset++;
+          }
+          ranked.push({ ...student, rank: currentRank });
+          prevScore = student.total_points;
+        });
+
+        return ranked;
       }
 
-      const top5 = students.slice(0, 5);
-      const others = students.slice(5);
+      async function loadLeaderboard() {
+        const { data: students, error } = await supabase
+          .from('students')
+          .select('id, name, total_points')
+          .order('total_points', { ascending: false });
 
-      renderTop5(top5);
-      renderAllStudents(others, 6);
-    }
+        if (error || !students) {
+          top5El.innerHTML += "<div class='loading'>⚠️ Failed to load</div>";
+          return;
+        }
 
-    function renderAllStudents(list, startRank = 6) {
-      const leftEl = document.getElementById("left-students");
-      const rightEl = document.getElementById("right-students");
+        const rankedList = getRankedList(students);
+        const top5 = rankedList.slice(0, 5);
+        const others = rankedList.slice(5);
 
-      if (!leftEl || !rightEl) {
-        console.error("Missing left/right student containers.");
-        return;
+        renderTop5(top5);
+        renderAllStudents(others);
       }
 
-      leftEl.innerHTML = '';
-      rightEl.innerHTML = '';
+      function renderAllStudents(list) {
+        leftEl.innerHTML = '';
+        rightEl.innerHTML = '';
 
-      list.forEach((student, index) => {
-        const el = document.createElement('div');
-        el.className = 'student-entry';
-        el.innerHTML = `
-          <div class="rank">${startRank + index}</div>
-          <div class="name">${student.name}</div>
-          <div class="points">${student.total_points}</div>
-        `;
-        el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
-        
-        // Alternate to left/right column
-        (index % 2 === 0 ? leftEl : rightEl).appendChild(el);
-      });
-    }
+        list.forEach((student, index) => {
+          const el = document.createElement('div');
+          el.className = 'student-entry';
+          el.innerHTML = `
+            <div class="rank">${student.rank}</div>
+            <div class="name">${student.name}</div>
+            <div class="points">${student.total_points}</div>
+          `;
+          el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
+          (index % 2 === 0 ? leftEl : rightEl).appendChild(el);
+        });
+      }
+
+      function renderTop5(list) {
+        const wrapper = document.createElement('div');
+
+        list.forEach((student, index) => {
+          const el = document.createElement('div');
+          el.className = 'student-entry top-rank';
+
+          const scaleMap = [1.3, 1.2, 1.1, 1.05, 1];
+          const scale = scaleMap[index] || 1;
+          el.style.transform = `scaleY(${scale})`;
+
+          const previousIndex = previousTop5.findIndex(prev => prev.id === student.id);
+          if (previousIndex !== -1 && previousIndex !== index) {
+            el.classList.add('moved');
+          }
+
+          el.innerHTML = `
+            <div class="rank">${student.rank}</div>
+            <div class="name">${student.name}</div>
+            <div class="points" data-id="${student.id}">${student.total_points}</div>
+          `;
+
+          el.onclick = () => window.location.href = `student-details.html?id=${student.id}`;
+          wrapper.appendChild(el);
+        });
+
+        const heading = top5El.querySelector('h2')?.outerHTML || '';
+        top5El.innerHTML = heading;
+        top5El.appendChild(wrapper);
+
+        previousTop5 = list.map(s => ({ id: s.id }));
+      }
+
+      // Load leaderboard
+      loadLeaderboard();
+
+      // Realtime updates
+      supabase
+        .channel('public:students')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, () => {
+          loadLeaderboard();
+        })
+        .subscribe();
+    </script>
 
 
     function renderTop5(list) {
